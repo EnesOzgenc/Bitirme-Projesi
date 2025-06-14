@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>F Klavye Oyunu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      transition: background 0.3s, color 0.3s, opacity 0.5s ease;
+    }
+    /* Gece/Gündüz Tema */
+    body.light {
+      background: #f2f2f2;
+      color: #000;
+    }
+    body.dark {
+      background: #111;
+      color: #FFD700;
+    }
+    h1 {
+      color: #1e3a8a;
+    }
+    .game-container {
+      margin-top: 30px;
+    }
+    #letter {
+      font-size: 72px;
+      color: #2563eb;
+      margin-bottom: 20px;
+      opacity: 1;
+    }
+    .score-board {
+      font-size: 24px;
+      margin: 20px 0;
+    }
+    /* Skorboard: Doğru Basılan Harf Sayısı, Puan, Zaman, Yanlış Sayısı */
+    .score-board span.label {
+      font-weight: bold;
+    }
+    #time {
+      font-size: 24px;
+      color: red;
+    }
+    /* "Başla" Butonu */
+    #start-btn {
+      padding: 10px 20px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    #start-btn:hover {
+      background-color: #1e40af;
+    }
+    .end-message {
+      font-size: 28px;
+      font-weight: bold;
+      color: #dc2626;
+      margin-top: 20px;
+    }
+    select {
+      padding: 8px;
+      font-size: 16px;
+      margin: 10px;
+    }
+    /* Geçiş Animasyonu */
+    .fade-out {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    /* Sol alt köşede Navigasyon Butonu (Logo Tarzı) */
+    .nav-button-alt {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      z-index: 1000;
+      padding: 10px 20px;
+      font-size: 18px;
+      /* Renkler JS tarafından güncellenecek */
+      background-color: #000000;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+    }
+    .nav-button-alt:hover {
+      transform: scale(1.05);
+    }
+    /* Sol üstte Tema Toggle Butonu */
+    .theme-toggle {
+      position: fixed;
+      top: 30px;
+      left: 10px;
+      z-index: 1000;
+      padding: 10px 15px;
+      font-size: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    /* Durdur/Devam Butonu */
+    #pause-btn {
+      padding: 10px 20px;
+      background-color: #e04f63;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 5px;
+      margin-top: 20px;
+      margin-left: 10px;
+      transition: background-color 0.3s;
+    }
+    #pause-btn:hover {
+      background-color: #c04052;
+    }
+    /* Bitir Butonu */
+    #finish-btn {
+      padding: 10px 20px;
+      background-color: #6a4a86;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 5px;
+      margin-top: 20px;
+      margin-left: 10px;
+      transition: background-color 0.3s;
+      display: none;
+    }
+    #finish-btn:hover {
+      background-color: #573a6b;
+    }
+  </style>
+</head>
+<body class="light">
+  <!-- Sol alt köşede Navigasyon Butonu: Yönlendirme "f_klavye_hız_testi.html" -->
+  <button class="nav-button-alt" id="navToTest">⌨ Hız Testi</button>
+  <!-- Sol üstte Tema Toggle Butonu -->
+  <button class="theme-toggle" id="themeToggle2">🌙</button>
+
+  <h1>F Klavye Oyunu</h1>
+  <div>
+    <label for="duration">Süre:</label>
+    <select id="duration">
+      <option value="30">30 saniye</option>
+      <option value="60">1 dakika</option>
+      <option value="90">1.5 dakika</option>
+      <option value="120">2 dakika</option>
+    </select>
+    <label for="difficulty">Zorluk:</label>
+    <select id="difficulty">
+      <option value="3000">Kolay</option>
+      <option value="2000" selected>Normal</option>
+      <option value="500">Zor</option>
+    </select>
+  </div>
+  <div class="game-container">
+    <!-- Skorboard -->
+    <div class="score-board">
+      <span class="label">Doğru Basılan Harf Sayısı:</span> <span id="correct-count">0</span> |
+      <span class="label">Puan:</span> <span id="score">0</span> |
+      <span class="label">Zaman:</span> <span id="time">0</span> saniye |
+      <span class="label">Yanlış Sayısı:</span> <span id="wrong-count">0</span>
+    </div>
+    <!-- "Başla" Butonu -->
+    <button id="start-btn" onclick="startGame()">Başla</button>
+    <!-- Durdur/Devam Butonu -->
+    <button id="pause-btn" style="display: none;" onclick="togglePause()">Durdur</button>
+    <!-- Bitir Butonu -->
+    <button id="finish-btn" style="display: none;" onclick="finishGame()">Bitir</button>
+    <div id="letter"></div>
+    <div id="end-message" class="end-message"></div>
+  </div>
+
+  <script>
+    // Global Değişkenler (Tüm değişkenler tek bir blokta)
+    let currentLetter = '';
+    let score = 0;
+    let correctCount = 0;
+    let timeLeft = 30;
+    let wrongCount = 0;
+    let gameStarted = false;
+    let gamePaused = false;
+    let letterTimeout = null;
+    let timeInterval = null;
+    let letterChangeInterval = 3000;
+    let initialTime = 0;
+
+    const fKlavyeHarfler = ['F','G','Ğ','I','O','D','R','N','H','P','Q','Ü','U','A','E','T','K','M','L','Y','Ş','İ','Z','S','Ç','B','C','V'];
+
+    // Tema Uygulama Fonksiyonu (oyun sayfası)
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+        themeToggle2.textContent = "☀";
+        themeToggle2.style.color = "yellow";
+        // Navigasyon butonu: Dark modda -> arka plan beyaz, yazı siyah.
+        document.getElementById("navToTest").style.backgroundColor = "#ffffff";
+        document.getElementById("navToTest").style.color = "#000000";
+      } else {
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+        themeToggle2.textContent = "🌙";
+        themeToggle2.style.color = "black";
+        // Navigasyon butonu: Light modda -> arka plan siyah, yazı beyaz.
+        document.getElementById("navToTest").style.backgroundColor = "#000000";
+        document.getElementById("navToTest").style.color = "#ffffff";
+      }
+    }
+    const storedTheme = localStorage.getItem('theme') || 'light';
+    document.body.className = storedTheme;
+    const themeToggle2 = document.getElementById('themeToggle2');
+    applyTheme(storedTheme);
+    themeToggle2.addEventListener("click", () => {
+      const currentTheme = localStorage.getItem('theme') || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      applyTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+
+    // Navigasyon: Sol alt buton, yönlendirme "f_klavye_hız_testi.html"
+    document.getElementById("navToTest").addEventListener("click", function() {
+      document.body.classList.add('fade-out');
+      setTimeout(function() {
+        window.location.href = "f_klavye_hız_testi.html";
+      }, 500);
+    });
+
+    function getRandomLetter() {
+      const index = Math.floor(Math.random() * fKlavyeHarfler.length);
+      return fKlavyeHarfler[index];
+    }
+
+    function showNewLetter() {
+      clearTimeout(letterTimeout);
+      currentLetter = getRandomLetter();
+      const letterElem = document.getElementById('letter');
+      letterElem.style.opacity = 0;
+      setTimeout(() => {
+        letterElem.textContent = currentLetter;
+        letterElem.style.transition = "opacity 0.3s";
+        letterElem.style.opacity = 1;
+      }, 100);
+      letterTimeout = setTimeout(showNewLetter, letterChangeInterval);
+    }
+
+    function startGame() {
+      if (gameStarted) return;
+      gameStarted = true;
+      gamePaused = false;
+      document.getElementById("pause-btn").style.display = "inline-block";
+      document.getElementById("finish-btn").style.display = "none";
+      
+      const selectedDuration = parseInt(document.getElementById('duration').value);
+      letterChangeInterval = parseInt(document.getElementById('difficulty').value);
+      timeLeft = selectedDuration;
+      initialTime = selectedDuration;
+      score = 0;
+      correctCount = 0;
+      wrongCount = 0;
+      document.getElementById('score').textContent = score;
+      document.getElementById('correct-count').textContent = correctCount;
+      document.getElementById('wrong-count').textContent = wrongCount;
+      document.getElementById('time').textContent = timeLeft;
+      document.getElementById('end-message').textContent = '';
+      document.getElementById('start-btn').disabled = true;
+      
+      showNewLetter();
+      
+      timeInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById('time').textContent = timeLeft;
+        if (timeLeft <= 0) finishGame();
+      }, 1000);
+    }
+
+    function togglePause() {
+      const pauseBtn = document.getElementById("pause-btn");
+      const finishBtn = document.getElementById("finish-btn");
+      if (!gamePaused) {
+        gamePaused = true;
+        clearInterval(timeInterval);
+        clearTimeout(letterTimeout);
+        pauseBtn.textContent = "Devam";
+        finishBtn.style.display = "inline-block";
+      } else {
+        gamePaused = false;
+        timeInterval = setInterval(() => {
+          timeLeft--;
+          document.getElementById('time').textContent = timeLeft;
+          if (timeLeft <= 0) finishGame();
+        }, 1000);
+        showNewLetter();
+        pauseBtn.textContent = "Durdur";
+        finishBtn.style.display = "none";
+      }
+    }
+
+    function finishGame() {
+      clearInterval(timeInterval);
+      clearTimeout(letterTimeout);
+      gameStarted = false;
+      let elapsed = initialTime - timeLeft;
+      document.getElementById('letter').textContent = 'Süre Bitti';
+      document.getElementById('end-message').textContent = `Yazılan Süre: ${elapsed} saniye, Doğru Basılan Harf Sayısı: ${correctCount}, Puan: ${score}, Yanlış Sayısı: ${wrongCount}`;
+      document.getElementById('start-btn').disabled = false;
+      document.getElementById("pause-btn").style.display = "none";
+      document.getElementById("finish-btn").style.display = "none";
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (!gameStarted || gamePaused) return;
+      const key = e.key.toLocaleUpperCase('tr-TR');
+      if (key === currentLetter) {
+        correctCount++;
+        score += 5;  // Doğru harf: +5 puan
+        document.getElementById('score').textContent = score;
+        document.getElementById('correct-count').textContent = correctCount;
+        showNewLetter();
+      } else if (fKlavyeHarfler.includes(key)) {
+        wrongCount++;
+        score -= 10; // Yanlış harf: -10 puan
+        document.getElementById('score').textContent = score;
+        document.getElementById('wrong-count').textContent = wrongCount;
+      }
+    });
+  </script>
+</body>
+</html>

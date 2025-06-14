@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Klavye Hız Testi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s, opacity 0.5s ease;
+    }
+    /* Gece/Gündüz Tema - Yazı Rengi Güncellendi */
+    body.light {
+      background: #f2f2f2;
+      color: #333333;
+    }
+    body.dark {
+      background: #111;
+      color: #EDEDED;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      transition: background 0.3s;
+    }
+    .container.light {
+      background: #fff;
+    }
+    .container.dark {
+      background: #222;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-size: 16px;
+      padding: 10px;
+      margin-top: 10px;
+      resize: none;
+      transition: background 0.3s, color 0.3s;
+    }
+    textarea.light {
+      background: #fff;
+      color: #000;
+    }
+    textarea.dark {
+      background: #333;
+      color: #FFD700;
+    }
+    .header {
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .controls label {
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    .controls select {
+      font-size: 16px;
+      padding: 5px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .controls select.light {
+      background-color: #fff;
+      color: #000;
+    }
+    .controls select.dark {
+      background-color: #000;
+      color: #FFD700;
+      border: 1px solid #FFD700;
+    }
+    /* Geçiş Animasyonu */
+    .fade-out {
+      opacity: 0;
+    }
+    /* Sağ alt köşede Navigasyon Butonu (Logo Tarzı) */
+    .nav-button {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 1000;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #000000;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+    }
+    .nav-button:hover {
+      background-color: #1e40af;
+      transform: scale(1.05);
+    }
+    /* Sol üstte Tema Toggle Butonu */
+    .theme-toggle {
+      position: fixed;
+      top: 30px;
+      left: 10px;
+      z-index: 1000;
+      padding: 10px 15px;
+      font-size: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+  </style>
+</head>
+<body class="light">
+  <!-- Sağ alt navigasyon butonu (logo tarzında) -->
+  <button class="nav-button" id="navToGame">⌨ Oyun</button>
+  <!-- Sol üst tema toggle butonu -->
+  <button class="theme-toggle" id="themeToggle">🌙</button>
+
+  <div class="container light" id="mainContainer">
+    <div class="header">Klavye Hız Testi</div>
+    <div class="controls">
+      <div style="display: flex; align-items: center;">
+        <label for="timeSelect">Süre Seçin:</label>
+        <select id="timeSelect" class="light">
+          <option value="30">30 Saniye</option>
+          <option value="60">1 Dakika</option>
+          <option value="180">3 Dakika</option>
+          <option value="300">5 Dakika</option>
+          <option value="600">10 Dakika</option>
+        </select>
+      </div>
+    </div>
+    <div class="timer-row">
+      <div>Kalan Süre: <span id="countdown">--:--</span></div>
+      <button id="restartBtn" title="Yeniden Başla">↻</button>
+    </div>
+    <p id="testText">
+      Bilgisayar kullanımı günümüzde oldukça yaygınlaştı. Klavye ile hızlı yazı yazmak, özellikle ofis çalışanları için büyük önem taşır. Doğru yazım kurallarına dikkat ederek, akıcı bir şekilde metin yazmak hem zaman kazandırır hem de profesyonellik sağlar. Yazma pratiği yapmak isteyenler için çeşitli uygulamalar geliştirilmiştir. Bu uygulamalar, kullanıcıların hızını ve doğruluğunu ölçer. Ne kadar çok pratik yapılırsa, yazma becerisi o kadar gelişir. Klavye düzeni, parmak pozisyonları ve dikkat unsurları verimli yazma sürecinde önemli rol oynar. Her gün birkaç dakika düzenli olarak çalışmak, büyük ilerlemeler sağlar.
+    </p>
+    <textarea id="userInput"></textarea>
+    <div class="stats">
+      <p>Yazılan Kelime Sayısı: <span id="wordCount">0</span></p>
+      <p>Yazma Hızı (WPM): <span id="wpm">0</span></p>
+      <p>Vuruş Hızı (CPM): <span id="cpm">0</span></p>
+      <p>Hata Sayısı: <span id="errorCount">0</span></p>
+    </div>
+    <div class="resultText" id="resultText"></div>
+  </div>
+
+  <script>
+    // Tema Uygulama Fonksiyonu
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+        mainContainer.classList.remove('light');
+        mainContainer.classList.add('dark');
+        userInput.classList.remove('light');
+        userInput.classList.add('dark');
+        timeSelect.classList.remove('light');
+        timeSelect.classList.add('dark');
+        themeToggle.textContent = "☀";
+        themeToggle.style.color = "yellow";
+        // Navigasyon butonu güncellemesi: Dark modda -> arka plan beyaz, yazı siyah.
+        document.getElementById("navToGame").style.backgroundColor = "#ffffff";
+        document.getElementById("navToGame").style.color = "#000000";
+      } else {
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+        mainContainer.classList.remove('dark');
+        mainContainer.classList.add('light');
+        userInput.classList.remove('dark');
+        userInput.classList.add('light');
+        timeSelect.classList.remove('dark');
+        timeSelect.classList.add('light');
+        themeToggle.textContent = "🌙";
+        themeToggle.style.color = "black";
+        // Navigasyon butonu güncellemesi: Light modda -> arka plan siyah, yazı beyaz.
+        document.getElementById("navToGame").style.backgroundColor = "#000000";
+        document.getElementById("navToGame").style.color = "#ffffff";
+      }
+    }
+    const storedTheme = localStorage.getItem('theme') || 'light';
+    document.body.className = storedTheme;
+    const mainContainer = document.getElementById('mainContainer');
+    const userInput = document.getElementById('userInput');
+    const timeSelect = document.getElementById('timeSelect');
+    const themeToggle = document.getElementById('themeToggle');
+    applyTheme(storedTheme);
+    
+    themeToggle.addEventListener("click", () => {
+      const currentTheme = localStorage.getItem('theme') || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      applyTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+
+    document.getElementById("navToGame").addEventListener("click", function() {
+      document.body.classList.add('fade-out');
+      setTimeout(function() {
+        window.location.href = "f_klavye_oyunu.html";
+      }, 500);
+    });
+
+    let countdown;
+    let timeLeft = 0;
+    let timerStarted = false;
+    const countdownDisplay = document.getElementById("countdown");
+    const resultDiv = document.getElementById("resultText");
+    let wordsArray = [];
+
+    window.onload = function() {
+      document.body.classList.remove('fade-out');
+      const testTextElem = document.getElementById("testText");
+      const rawText = testTextElem.innerText.trim();
+      wordsArray = rawText.split(/\s+/);
+      testTextElem.innerHTML = wordsArray.map((word, i) => `<span class="word" data-index="${i}">${word}</span>`).join(" ");
+    };
+
+    userInput.addEventListener("input", () => {
+      if (!timerStarted) {
+        startTimer();
+        timerStarted = true;
+      }
+      updateCurrentWordIndicator();
+    });
+
+    function startTimer() {
+      timeLeft = parseInt(timeSelect.value);
+      updateCountdownDisplay();
+      countdown = setInterval(() => {
+        timeLeft--;
+        updateCountdownDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          userInput.disabled = true;
+          calculateStats();
+        }
+      }, 1000);
+    }
+
+    function updateCountdownDisplay() {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      countdownDisplay.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function updateCurrentWordIndicator() {
+      const userWords = userInput.value.split(/\s+/);
+      let currentIndex = userWords.length - 1;
+      const typedWord = userWords[userWords.length - 1] || "";
+      document.querySelectorAll("#testText .word").forEach(span => {
+         span.style.textDecoration = "";
+         span.style.textUnderlineOffset = "";
+         span.style.color = "";
+      });
+      if (currentIndex < wordsArray.length) {
+         const currentSpan = document.querySelector(`#testText .word[data-index="${currentIndex}"]`);
+         if (currentSpan) {
+           currentSpan.style.textDecoration = "underline";
+           currentSpan.style.textUnderlineOffset = "2px";
+           if (typedWord !== "" && !wordsArray[currentIndex].toLowerCase().startsWith(typedWord.toLowerCase())) {
+             currentSpan.style.color = "red";
+           }
+         }
+      }
+    }
+
+    function calculateStats() {
+      const userText = userInput.value.trim();
+      const originalText = wordsArray.join(" ");
+      const originalWords = originalText.split(/\s+/);
+      const userWords = userText.split(/\s+/);
+      let totalErrors = 0;
+      let resultHTML = '';
+      const punctuations = [".", ",", ";", ":", "!", "?", "—", "-", "…"];
+      for (let i = 0; i < originalWords.length; i++) {
+        const original = originalWords[i] || "";
+        const user = userWords[i] || "";
+        const lastChar = original.slice(-1);
+        const isPunctuation = punctuations.includes(lastChar);
+        const baseWord = isPunctuation ? original.slice(0, -1) : original;
+        if (i === userWords.length - 1 && !user.endsWith(lastChar) && baseWord.startsWith(user)) {
+          resultHTML += `<span class="correct">${user} </span>`;
+          break;
+        }
+        if (original === user) {
+          resultHTML += `<span class="correct">${user} </span>`;
+        } else if (user === baseWord && isPunctuation) {
+          resultHTML += `<span class="correct">${user}</span><span class="punc-error">${lastChar}</span> `;
+          totalErrors++;
+        } else if (user.startsWith(baseWord)) {
+          resultHTML += `<span class="correct">${user} </span>`;
+        } else if (user === "") {
+          continue;
+        } else {
+          resultHTML += `<span class="wrong">${user} </span>`;
+          totalErrors++;
+        }
+      }
+      const wordCount = userWords.filter(w => w.trim() !== "").length;
+      const charCount = userText.length;
+      const selectedTime = parseInt(timeSelect.value);
+      const wpm = Math.round((wordCount / selectedTime) * 60);
+      const cpm = Math.round((charCount / selectedTime) * 60);
+      document.getElementById("wordCount").textContent = wordCount;
+      document.getElementById("wpm").textContent = wpm;
+      document.getElementById("cpm").textContent = cpm;
+      document.getElementById("errorCount").textContent = totalErrors;
+      resultDiv.innerHTML = "<hr><strong>Yazdığınız Metin (Hatalar kırmızı):</strong><br><br>" + resultHTML;
+    }
+
+    restartBtn.addEventListener("click", () => {
+      clearInterval(countdown);
+      timeLeft = 0;
+      timerStarted = false;
+      userInput.disabled = false;
+      userInput.value = "";
+      document.getElementById("countdown").textContent = "--:--";
+      document.getElementById("wordCount").textContent = "0";
+      document.getElementById("wpm").textContent = "0";
+      document.getElementById("cpm").textContent = "0";
+      document.getElementById("errorCount").textContent = "0";
+      resultDiv.innerHTML = "";
+    });
+  </script>
+</body>
+</html>
