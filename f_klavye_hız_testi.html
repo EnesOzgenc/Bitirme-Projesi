@@ -1,336 +1,1063 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Klavye Hız Testi</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      transition: background 0.3s, color 0.3s, opacity 0.5s ease;
-    }
-    /* Gece/Gündüz Tema - Yazı Rengi Güncellendi */
-    body.light {
-      background: #f2f2f2;
-      color: #333333;
-    }
-    body.dark {
-      background: #111;
-      color: #EDEDED;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      border-radius: 10px;
-      transition: background 0.3s;
-    }
-    .container.light {
-      background: #fff;
-    }
-    .container.dark {
-      background: #222;
-    }
-    textarea {
-      width: 100%;
-      height: 200px;
-      font-size: 16px;
-      padding: 10px;
-      margin-top: 10px;
-      resize: none;
-      transition: background 0.3s, color 0.3s;
-    }
-    textarea.light {
-      background: #fff;
-      color: #000;
-    }
-    textarea.dark {
-      background: #333;
-      color: #FFD700;
-    }
-    .header {
-      text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .controls label {
-      font-size: 16px;
-      margin-right: 10px;
-    }
-    .controls select {
-      font-size: 16px;
-      padding: 5px;
-      transition: background 0.3s, color 0.3s;
-    }
-    .controls select.light {
-      background-color: #fff;
-      color: #000;
-    }
-    .controls select.dark {
-      background-color: #000;
-      color: #FFD700;
-      border: 1px solid #FFD700;
-    }
-    /* Geçiş Animasyonu */
-    .fade-out {
-      opacity: 0;
-    }
-    /* Sağ alt köşede Navigasyon Butonu (Logo Tarzı) */
-    .nav-button {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      z-index: 1000;
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: #000000;
-      color: #ffffff;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-      box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
-    }
-    .nav-button:hover {
-      background-color: #1e40af;
-      transform: scale(1.05);
-    }
-    /* Sol üstte Tema Toggle Butonu */
-    .theme-toggle {
-      position: fixed;
-      top: 30px;
-      left: 10px;
-      z-index: 1000;
-      padding: 10px 15px;
-      font-size: 20px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: color 0.3s;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Klavye Hız Testi</title>
+    <style>
+        :root {
+            /* Light Tema Değişkenleri */
+            --bg-light: #f7f7f7; /* Çok açık gri */
+            --text-light: #222222; /* Koyu gri */
+            --container-bg-light: #ffffff; /* Beyaz */
+            --input-bg-light: #ffffff;
+            --input-text-light: #333333;
+            --border-light: #dcdcdc; /* Açık gri kenarlık */
+            --header-color-light: #2c3e50; /* Koyu lacivert */
+            --restart-btn-color-light: #2c3e50;
+            --key-bg-light: #e0e0e0; /* Açık gri tuş */
+            --key-border-light: #c0c0c0; /* Gri tuş kenarlığı */
+            --key-text-light: #333333;
+            --key-highlight-correct-bg-light: #a8e6cf; /* Pastel yeşil */
+            --key-highlight-wrong-bg-light: #ffadad; /* Pastel kırmızı */
+            --nav-btn-bg-light: #34495e; /* Koyu mavi gri */
+            --nav-btn-text-light: #ffffff;
+            --theme-toggle-light: #2c3e50;
+
+            --current-word-color-light: #3498db; /* Mavi */
+            --char-correct-color-light: #27ae60; /* Yeşil */
+            --char-wrong-color-light: #e74c3c; /* Kırmızı */
+            --extra-char-color-light: #cc3333; /* Ekstra karakter için daha koyu kırmızı */
+            --missing-char-bg-light: #ffebcd; /* Açık turuncu (arka plan) */
+            --missing-char-text-light: #6a6a6a; /* Gri (metin) */
+
+            /* Gündüz modu için yeni süre barı rengi */
+            --timer-bg-light: #e6f2ff; /* Çok açık mavi */
+            --timer-text-light: #2c3e50; /* Koyu lacivert */
+        }
+
+        body.dark {
+            /* Dark Tema Değişkenleri */
+            --bg-dark: #2c3e50; /* Koyu mavi gri */
+            --text-dark: #ecf0f1; /* Açık gri */
+            --container-bg-dark: #34495e; /* Daha koyu mavi gri */
+            --input-bg-dark: #4a627a; /* Koyu gri mavi */
+            --input-text-dark: #ecf0f1;
+            --border-dark: #667e91; /* Orta gri mavi kenarlık */
+            --header-color-dark: #a9d9e9; /* Açık mavi */
+            --restart-btn-color-dark: #a9d9e9;
+            --key-bg-dark: #4e6a82; /* Koyu gri tuş */
+            --key-border-dark: #6e8a9f; /* Orta gri tuş kenarlığı */
+            --key-text-dark: #ecf0f1;
+            --key-highlight-correct-bg-dark: #4CAF50; /* Daha koyu yeşil */
+            --key-highlight-wrong-bg-dark: #f4436; /* Daha koyu kırmızı */
+            --nav-btn-bg-dark: #ecf0f1;
+            --nav-btn-text-dark: #2c3e50;
+            --theme-toggle-dark: #f1c40f; /* Sarı */
+
+            --current-word-color-dark: #81d4fa; /* Açık mavi */
+            --char-correct-color-dark: #66bb6a; /* Açık yeşil */
+            --char-wrong-color-dark: #ef5350; /* Açık kırmızı */
+            --extra-char-color-dark: #c0392b; /* Ekstra karakter için daha koyu kırmızı */
+            --missing-char-bg-dark: #a0522d; /* Koyu kahve (arka plan) */
+            --missing-char-text-dark: #f5f5dc; /* Krem (metin) */
+
+            /* Gece modu için süre barı rengi */
+            --timer-bg-dark: #3d5a73; /* Koyu mod için uyumlu ton */
+            --timer-text-dark: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column; /* İçeriği dikeyde ortalamak için */
+            align-items: center; /* Yatayda ortalamak için */
+            /* gap ve flex-wrap kaldırıldı */
+        }
+
+        body.light {
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+        body.dark {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        #mainContentWrapper { /* Hız testi kutusu için yeni kapsayıcı */
+            display: flex;
+            flex-direction: column; /* İçindeki elemanları dikeyde sırala */
+            align-items: center; /* İçindeki elemanları yatayda ortala */
+            gap: 20px; /* Hız testi ve altındaki klavye/sonuç kutucukları arasındaki boşluk */
+            width: 800px; /* TestAreaContainer'ın genişliği */
+            max-width: 100%; /* Daha küçük ekranlarda uyum sağlar */
+            box-sizing: border-box; /* Padding'i genişliğe dahil et */
+        }
+
+        #testAreaContainer {
+            width: 100%; /* mainContentWrapper içinde tam genişlik */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        body.light #testAreaContainer { background: var(--container-bg-light); }
+        body.dark #testAreaContainer {
+            background: var(--container-bg-dark);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        #rightPanelContainer { /* İstatistik kutusu için yeni konumlandırma */
+            position: fixed; /* Sayfada sabit kalır */
+            top: 20px; /* Üstten 20px boşluk */
+            right: 20px; /* Sağdan 20px boşluk */
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background 0.3s, box-shadow 0.3s;
+            z-index: 999; /* Diğer içeriklerin üzerinde kalmasını sağlar */
+        }
+        body.light #rightPanelContainer { background: var(--container-bg-light); }
+        body.dark #rightPanelContainer {
+            background: var(--container-bg-dark);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        textarea {
+            width: 100%;
+            height: 180px;
+            font-size: 18px;
+            padding: 15px;
+            margin-top: 20px;
+            resize: none;
+            border: 1px solid var(--border-light);
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+        body.light textarea {
+            background: var(--input-bg-light);
+            color: var(--input-text-light);
+            border-color: var(--border-light);
+        }
+        body.dark textarea {
+            background: var(--input-bg-dark);
+            color: var(--input-text-dark);
+            border-color: var(--border-dark);
+        }
+
+        .header {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--header-color-light);
+            transition: color 0.3s;
+        }
+        body.dark .header { color: var(--header-color-dark); }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+        .controls div { display: flex; align-items: center; gap: 5px; }
+        .controls label { font-size: 18px; margin-right: 10px; transition: color 0.3s; }
+        .controls select {
+            font-size: 16px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+        body.light .controls select {
+            background-color: var(--input-bg-light);
+            color: var(--input-text-light);
+            border-color: var(--border-light);
+        }
+        body.dark .controls select {
+            background-color: var(--input-bg-dark);
+            color: var(--input-text-dark);
+            border-color: var(--border-dark);
+        }
+
+        .timer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.light .timer-row {
+            background-color: var(--timer-bg-light);
+            color: var(--timer-text-light);
+        }
+        body.dark .timer-row {
+            background-color: var(--timer-bg-dark);
+            color: var(--timer-text-dark);
+        }
+
+        #countdown { color: var(--char-wrong-color-light); transition: color 0.3s; } /* Kırmızı zaman */
+        body.dark #countdown { color: var(--char-wrong-color-dark); }
+        #restartBtn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--restart-btn-color-light);
+            transition: transform 0.2s ease-in-out, color 0.3s;
+        }
+        body.dark #restartBtn { color: var(--restart-btn-color-dark); }
+        #restartBtn:hover { transform: rotate(90deg); }
+
+        #testText {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace;
+            height: 150px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            text-align: justify;
+            background-color: rgba(0,0,0,0.03); /* hafif şeffaf arka plan */
+            transition: background-color 0.3s;
+        }
+        body.dark #testText { background-color: rgba(255,255,255,0.05); }
+        #testText .word { padding: 1px 0; }
+        #testText .current-word {
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            color: var(--current-word-color-light);
+            transition: color 0.3s;
+        }
+        body.dark #testText .current-word { color: var(--current-word-color-dark); }
+
+        /* Metin içindeki harflerin renklendirmeleri */
+        #testText .char-correct { color: var(--char-correct-color-light); }
+        body.dark #testText .char-correct { color: var(--char-correct-color-dark); }
+        #testText .char-wrong { color: var(--char-wrong-color-light); }
+        body.dark #testText .char-wrong { color: var(--char-wrong-color-dark); }
+        /* Yeni eklenen ekstra karakter stili */
+        #testText .extra-char {
+            color: var(--extra-char-color-light); /* Koyu kırmızı */
+        }
+        body.dark #testText .extra-char {
+            color: var(--extra-char-color-dark);
+        }
+        /* Eksik karakter stili */
+        #testText .missing-char-placeholder {
+            background-color: var(--missing-char-bg-light);
+            color: var(--missing-char-text-light);
+            border-radius: 2px;
+            display: inline-block; /* Arka planın metni sarması için */
+        }
+        body.dark #testText .missing-char-placeholder {
+            background-color: var(--missing-char-bg-dark);
+            color: var(--missing-char-text-dark);
+        }
+
+        .stats-box {
+            padding: 0; /* İç boşluğu main #rightPanelContainer'a taşıdık */
+            border-radius: 0; /* Radius'u main #rightPanelContainer'a taşıdık */
+            box-shadow: none; /* Gölgeyi main #rightPanelContainer'a taşıdık */
+            box-sizing: border-box;
+            width: 100%;
+            background: none;
+            transition: color 0.3s; /* Yazı rengi değişimi için */
+        }
+        .stats-box p { margin: 8px 0; font-size: 18px; }
+
+        #resultTextContainer {
+            width: 800px; /* TestAreaContainer'ın genişliği ile aynı olsun */
+            max-width: 100%;
+            margin-top: 20px;
+            box-sizing: border-box;
+            /* Ortalamak için body'nin flex center'ını kullanıyoruz, margin-left/right auto'ya gerek yok */
+        }
+        .resultText {
+            padding: 15px;
+            border: 1px dashed var(--border-light);
+            border-radius: 5px;
+            font-size: 18px;
+            line-height: 1.6;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        body.dark .resultText { border-color: var(--border-dark); }
+        .resultText .correct-char { color: var(--char-correct-color-light); }
+        body.dark .resultText .correct-char { color: var(--char-correct-color-dark); }
+        .resultText .wrong-char {
+            background-color: var(--char-wrong-color-light);
+            color: white;
+            border-radius: 2px;
+            display: inline-block; /* Arka planın metni sarması için */
+        }
+        body.dark .resultText .wrong-char {
+            background-color: var(--char-wrong-color-dark);
+            color: white;
+        }
+        .resultText .missing-char {
+            background-color: var(--missing-char-bg-light);
+            color: var(--missing-char-text-light);
+            border-radius: 2px;
+            display: inline-block; /* Arka planın metni sarması için */
+        }
+        body.dark .resultText .missing-char {
+            background-color: var(--missing-char-bg-dark);
+            color: var(--missing-char-text-dark);
+        }
+
+        #keyboardContainer {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05); /* hafif iç gölge */
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        body.light #keyboardContainer { background-color: #f0f0f0; }
+        body.dark #keyboardContainer { background-color: #3b5269; } /* Koyu mod için koyu gri */
+
+        .keyboard-row { display: flex; justify-content: center; margin-bottom: 5px; }
+        .key {
+            display: flex; justify-content: center; align-items: center;
+            min-width: 40px; height: 40px;
+            border: 1px solid var(--key-border-light);
+            border-radius: 5px; margin: 2px;
+            background-color: var(--key-bg-light);
+            font-weight: bold; font-size: 14px;
+            cursor: default; transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+            box-sizing: border-box; padding: 0 5px; user-select: none;
+            color: var(--key-text-light);
+            position: relative; /* Shifted karakterler için */
+        }
+        body.dark .key {
+            background-color: var(--key-bg-dark);
+            color: var(--key-text-dark);
+            border-color: var(--key-border-dark);
+        }
+        .key.highlight-correct { background-color: var(--key-highlight-correct-bg-light); color: var(--text-light); }
+        body.dark .key.highlight-correct { background-color: var(--key-highlight-correct-bg-dark); color: var(--text-dark); }
+        .key.highlight-wrong { background-color: var(--key-highlight-wrong-bg-light); color: var(--text-light); }
+        body.dark .key.highlight-wrong { background-color: var(--key-highlight-wrong-bg-dark); color: var(--text-dark); }
+
+        /* Shifted karakterler için stil */
+        .key .top-left {
+            position: absolute;
+            top: 2px;
+            left: 5px;
+            font-size: 0.7em;
+        }
+        .key .bottom-center {
+            position: absolute;
+            bottom: 2px;
+            font-size: 1em; /* Main character size */
+        }
+
+        /* Özel tuş boyutları */
+        .key.one-half { width: 60px; } .key.tab { width: 70px; }
+        .key.caps { width: 90px; } /* Caps Lock daha geniş */
+        .key.shift { width: 120px; } /* Shift tuşları daha da geniş */
+        .key.ctrl { width: 80px; } /* Ctrl tuşları daha geniş */
+        .key.alt { width: 80px; } /* Alt tuşları daha geniş */
+        .key.win { width: 60px; } /* Windows tuşu */
+        .key.fn { width: 60px; } /* Fn tuşu */
+        .key.space { width: 300px; flex-shrink: 0; }
+        .key.enter { width: 100px; } /* Enter tuşu daha geniş */
+        .key.backspace { width: 100px; } /* Backspace daha geniş */
+        .key.pipe { width: 50px; } /* Boru tuşu (|) */
+
+
+        .fade-out { opacity: 0; }
+        .nav-button {
+            position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+            padding: 12px 25px; font-size: 18px;
+            border: none; border-radius: 10px; cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s, color 0.3s, box-shadow 0.3s;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+            background-color: var(--nav-btn-bg-light);
+            color: var(--nav-btn-text-light);
+        }
+        .nav-button:hover { transform: scale(1.05); }
+        body.light .nav-button:hover { background-color: #2a3b4c; } /* Koyu hover */
+        body.dark .nav-button { background-color: var(--nav-btn-bg-dark); color: var(--nav-btn-text-dark); }
+        body.dark .nav-button:hover { background-color: #dbe4e6; } /* Açık hover */
+
+        .theme-toggle {
+            position: fixed; top: 20px; left: 20px; z-index: 1000;
+            padding: 10px 15px; font-size: 24px; background: none; border: none; cursor: pointer;
+            transition: color 0.3s; line-height: 1;
+            color: var(--theme-toggle-light);
+        }
+        body.dark .theme-toggle { color: var(--theme-toggle-dark); }
+
+        /* Mobil Duyarlılık */
+        @media (max-width: 1280px) {
+            body {
+                /* mainContentWrapper'ı ortalamak için body flex özellikleri korunmalı */
+                flex-direction: column;
+                align-items: center;
+                padding: 20px; /* Sayfa kenar boşluğunu koru */
+            }
+
+            #mainContentWrapper {
+                max-width: 100%; /* Kendi maksimum genişliği */
+                width: 100%; /* Tam genişlik almasını sağla */
+                /* Mobil cihazlarda ortalamak için margin auto yerine flexbox kullanılıyor */
+            }
+
+            #testAreaContainer {
+                width: 100%; /* Ana hız testi kutucuğu tam genişlik alsın */
+                max-width: 800px; /* Ancak çok geniş olmasın */
+            }
+
+            #rightPanelContainer { /* İstatistik kutusu mobil için yeniden düzenlenir */
+                position: static; /* Sabit konumlandırmayı kaldır */
+                width: 100%; /* Tam genişlik al */
+                max-width: 800px; /* Ana kutucukla aynı max-width'e sahip olsun */
+                margin-top: 20px; /* Üstteki diğer içerikle arasında boşluk bırak */
+                margin-left: auto; /* Yatayda ortalamak için */
+                margin-right: auto; /* Yatayda ortalamak için */
+                padding: 20px; /* İç boşluğu koru */
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Gölgeyi tekrar ekle */
+            }
+        }
+
+        @media (max-width: 992px) {
+            #testAreaContainer, #rightPanelContainer {
+                padding: 15px;
+            }
+            #keyboardContainer { padding: 10px; }
+            .key { min-width: 30px; height: 35px; font-size: 12px; margin: 1px; }
+            /* Özel tuş boyutlarını mobil için ayarla */
+            .key.tab, .key.caps, .key.tab, .key.caps, .key.shift, .key.ctrl, .key.alt, .key.win, .key.fn, .key.enter, .key.backspace, .key.pipe {
+                width: auto; padding: 0 3px; min-width: unset;
+            }
+            .key.space { width: 250px; }
+            .key .top-left, .key .bottom-center { font-size: 0.6em; position: static; } /* Mobil için iç metin düzenlemesi */
+            .key { display: flex; flex-direction: column; justify-content: center; align-items: center; } /* Mobil için tuş içeriği düzenlemesi */
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            #testAreaContainer { padding: 15px; }
+            .header { font-size: 28px; }
+            textarea, #testText { height: 120px; font-size: 16px; padding: 10px; }
+            .controls { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .controls label, .controls select { font-size: 16px; }
+            .timer-row { font-size: 18px; }
+            #restartBtn { font-size: 24px; }
+            .stats-box p, .resultText { font-size: 16px; padding: 10px; }
+            .nav-button { bottom: 10px; right: 10px; padding: 10px 20px; font-size: 16px; }
+            .theme-toggle { top: 10px; left: 10px; font-size: 20px; }
+            #keyboardContainer { padding: 8px; }
+            .key { min-width: 25px; height: 30px; font-size: 11px; margin: 1px; }
+            .key.space { width: 180px; }
+        }
+    </style>
 </head>
 <body class="light">
-  <!-- Sağ alt navigasyon butonu (logo tarzında) -->
-  <button class="nav-button" id="navToGame">⌨ Oyun</button>
-  <!-- Sol üst tema toggle butonu -->
-  <button class="theme-toggle" id="themeToggle">🌙</button>
+    <button class="nav-button" id="navToGame" aria-label="Klavye Oyununa Git">⌨ Oyun</button>
+    <button class="theme-toggle" id="themeToggle" aria-label="Temayı Değiştir">🌙</button>
 
-  <div class="container light" id="mainContainer">
-    <div class="header">Klavye Hız Testi</div>
-    <div class="controls">
-      <div style="display: flex; align-items: center;">
-        <label for="timeSelect">Süre Seçin:</label>
-        <select id="timeSelect" class="light">
-          <option value="30">30 Saniye</option>
-          <option value="60">1 Dakika</option>
-          <option value="180">3 Dakika</option>
-          <option value="300">5 Dakika</option>
-          <option value="600">10 Dakika</option>
-        </select>
-      </div>
+    <div id="mainContentWrapper">
+        <div id="testAreaContainer">
+            <div class="header">Klavye Hız Testi</div>
+            <div class="controls">
+                <div>
+                    <label for="timeSelect">Süre Seçin:</label>
+                    <select id="timeSelect" aria-label="Test süresini seçin">
+                        <option value="30">30 Saniye</option>
+                        <option value="60">1 Dakika</option>
+                        <option value="180">3 Dakika</option>
+                        <option value="300">5 Dakika</option>
+                        <option value="600">10 Dakika</option>
+                    </select>
+                </div>
+            </div>
+            <div class="timer-row">
+                <div>Kalan Süre: <span id="countdown" aria-live="polite">--:--</span></div>
+                <button id="restartBtn" title="Yeniden Başla" aria-label="Testi yeniden başlat">↻</button>
+            </div>
+
+            <p id="testText" aria-live="assertive" tabindex="0">
+            </p>
+            <textarea id="userInput" placeholder="Yukarıdaki metni buraya yazmaya başlayın..." aria-label="Yazma alanı"></textarea>
+
+            <div id="keyboardContainer">
+                <div class="keyboard-row">
+                    <div class="key" data-key="1">1</div>
+                    <div class="key" data-key="2">2</div>
+                    <div class="key" data-key="3">3</div>
+                    <div class="key" data-key="4">4</div>
+                    <div class="key" data-key="5">5</div>
+                    <div class="key" data-key="6">6</div>
+                    <div class="key" data-key="7">7</div>
+                    <div class="key" data-key="8">8</div>
+                    <div class="key" data-key="9">9</div>
+                    <div class="key" data-key="0">0</div>
+                    <div class="key" data-key="/">/</div>
+                    <div class="key" data-key="-">-</div>
+                    <div class="key backspace" data-key="backspace">⌫</div>
+                </div>
+                <div class="keyboard-row">
+                    <div class="key tab" data-key="tab">Tab</div>
+                    <div class="key" data-key="f">f</div>
+                    <div class="key" data-key="g">g</div>
+                    <div class="key" data-key="ğ">ğ</div>
+                    <div class="key" data-key="ı">ı</div>
+                    <div class="key" data-key="o">o</div>
+                    <div class="key" data-key="d">d</div>
+                    <div class="key" data-key="r">r</div>
+                    <div class="key" data-key="n">n</div>
+                    <div class="key" data-key="h">h</div>
+                    <div class="key" data-key="p">p</div>
+                    <div class="key" data-key="q">q</div>
+                    <div class="key" data-key="w">w</div>
+                </div>
+                <div class="keyboard-row">
+                    <div class="key caps" data-key="capslock">Caps Lock</div>
+                    <div class="key" data-key="u">u</div>
+                    <div class="key" data-key="i">i</div>
+                    <div class="key" data-key="e">e</div>
+                    <div class="key" data-key="a">a</div>
+                    <div class="key" data-key="ü">ü</div>
+                    <div class="key" data-key="t">t</div>
+                    <div class="key" data-key="k">k</div>
+                    <div class="key" data-key="m">m</div>
+                    <div class="key" data-key="l">l</div>
+                    <div class="key" data-key="y">y</div>
+                    <div class="key" data-key="ş">ş</div>
+                    <div class="key" data-key="x">x</div>
+                    <div class="key enter" data-key="enter">Enter</div>
+                </div>
+                <div class="keyboard-row">
+                    <div class="key shift" data-key="shiftleft">Shift</div>
+                    <div class="key" data-key="j">j</div>
+                    <div class="key" data-key="ö">ö</div>
+                    <div class="key" data-key="v">v</div>
+                    <div class="key" data-key="c">c</div>
+                    <div class="key" data-key="ç">ç</div>
+                    <div class="key" data-key="z">z</div>
+                    <div class="key" data-key="s">s</div>
+                    <div class="key" data-key="b">b</div>
+                    <div class="key" data-key=".">.</div>
+                    <div class="key" data-key=",">,</div>
+                    <div class="key shift" data-key="shiftright">Shift</div>
+                </div>
+                <div class="keyboard-row">
+                    <div class="key ctrl" data-key="controlleft">Ctrl</div>
+                    <div class="key alt" data-key="altleft">Alt</div>
+                    <div class="key space" data-key=" ">Boşluk</div>
+                    <div class="key alt" data-key="altright">Alt Gr</div>
+                    <div class="key ctrl" data-key="controlright">Ctrl</div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="timer-row">
-      <div>Kalan Süre: <span id="countdown">--:--</span></div>
-      <button id="restartBtn" title="Yeniden Başla">↻</button>
+
+    <div id="rightPanelContainer">
+        <div class="stats-box" role="status" aria-live="polite">
+            <p>Yazılan Kelime Sayısı: <span id="wordCount">0</span></p>
+            <p>Yazma Hızı (WPM): <span id="wpm">0</span></p>
+            <p>Vuruş Hızı (CPM): <span id="cpm">0</span></p>
+            <p>Hata Sayısı: <span id="errorCount">0</span></p>
+        </div>
     </div>
-    <p id="testText">
-      Bilgisayar kullanımı günümüzde oldukça yaygınlaştı. Klavye ile hızlı yazı yazmak, özellikle ofis çalışanları için büyük önem taşır. Doğru yazım kurallarına dikkat ederek, akıcı bir şekilde metin yazmak hem zaman kazandırır hem de profesyonellik sağlar. Yazma pratiği yapmak isteyenler için çeşitli uygulamalar geliştirilmiştir. Bu uygulamalar, kullanıcıların hızını ve doğruluğunu ölçer. Ne kadar çok pratik yapılırsa, yazma becerisi o kadar gelişir. Klavye düzeni, parmak pozisyonları ve dikkat unsurları verimli yazma sürecinde önemli rol oynar. Her gün birkaç dakika düzenli olarak çalışmak, büyük ilerlemeler sağlar.
-    </p>
-    <textarea id="userInput"></textarea>
-    <div class="stats">
-      <p>Yazılan Kelime Sayısı: <span id="wordCount">0</span></p>
-      <p>Yazma Hızı (WPM): <span id="wpm">0</span></p>
-      <p>Vuruş Hızı (CPM): <span id="cpm">0</span></p>
-      <p>Hata Sayısı: <span id="errorCount">0</span></p>
+
+    <div id="resultTextContainer">
+        <div class="resultText" id="resultText" role="region" aria-label="Test Sonuçları"></div>
     </div>
-    <div class="resultText" id="resultText"></div>
-  </div>
 
-  <script>
-    // Tema Uygulama Fonksiyonu
-    function applyTheme(theme) {
-      if (theme === 'dark') {
-        document.body.classList.remove('light');
-        document.body.classList.add('dark');
-        mainContainer.classList.remove('light');
-        mainContainer.classList.add('dark');
-        userInput.classList.remove('light');
-        userInput.classList.add('dark');
-        timeSelect.classList.remove('light');
-        timeSelect.classList.add('dark');
-        themeToggle.textContent = "☀";
-        themeToggle.style.color = "yellow";
-        // Navigasyon butonu güncellemesi: Dark modda -> arka plan beyaz, yazı siyah.
-        document.getElementById("navToGame").style.backgroundColor = "#ffffff";
-        document.getElementById("navToGame").style.color = "#000000";
-      } else {
-        document.body.classList.remove('dark');
-        document.body.classList.add('light');
-        mainContainer.classList.remove('dark');
-        mainContainer.classList.add('light');
-        userInput.classList.remove('dark');
-        userInput.classList.add('light');
-        timeSelect.classList.remove('dark');
-        timeSelect.classList.add('light');
-        themeToggle.textContent = "🌙";
-        themeToggle.style.color = "black";
-        // Navigasyon butonu güncellemesi: Light modda -> arka plan siyah, yazı beyaz.
-        document.getElementById("navToGame").style.backgroundColor = "#000000";
-        document.getElementById("navToGame").style.color = "#ffffff";
-      }
-    }
-    const storedTheme = localStorage.getItem('theme') || 'light';
-    document.body.className = storedTheme;
-    const mainContainer = document.getElementById('mainContainer');
-    const userInput = document.getElementById('userInput');
-    const timeSelect = document.getElementById('timeSelect');
-    const themeToggle = document.getElementById('themeToggle');
-    applyTheme(storedTheme);
-    
-    themeToggle.addEventListener("click", () => {
-      const currentTheme = localStorage.getItem('theme') || 'light';
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      applyTheme(newTheme);
-      localStorage.setItem('theme', newTheme);
-    });
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const DOMElements = {
+                userInput: document.getElementById('userInput'),
+                timeSelect: document.getElementById('timeSelect'),
+                themeToggle: document.getElementById('themeToggle'),
+                navToGame: document.getElementById("navToGame"),
+                restartBtn: document.getElementById("restartBtn"),
+                countdownDisplay: document.getElementById("countdown"),
+                resultDiv: document.getElementById("resultText"),
+                testTextElem: document.getElementById("testText"),
+                statsBox: document.querySelector('.stats-box'),
+                keyboardKeys: document.querySelectorAll('.key')
+            };
 
-    document.getElementById("navToGame").addEventListener("click", function() {
-      document.body.classList.add('fade-out');
-      setTimeout(function() {
-        window.location.href = "f_klavye_oyunu.html";
-      }, 500);
-    });
+            let countdownInterval;
+            let timeLeft = 0;
+            let timerStarted = false;
+            let startTime;
+            let originalText = ""; // Global olarak orijinal metni tut
+            let liveErrorCount = 0; // CANLI HATA SAYISINI TUTACAK YENİ DEĞİŞKEN
 
-    let countdown;
-    let timeLeft = 0;
-    let timerStarted = false;
-    const countdownDisplay = document.getElementById("countdown");
-    const resultDiv = document.getElementById("resultText");
-    let wordsArray = [];
+            // Metinlerin olduğu fonksiyon. Buraya istediğiniz metinleri ekleyebilirsiniz.
+            function testTexts() {
+                // Metinleri trim ile baştan ve sondan boşluklardan arındırın
+                // Ek olarak, her metnin sonunda fazladan bir boşluk bırakılmadığından emin olmak için düzenlendi.
+                return [
+                    "İşletmeler, kamu kurumları ve halk için güvenilir teknik seçenekler sunmak amacıyla enerji sektöründe benzersiz araştırma ve geliştirme çalışmaları yapmamız gereklidir. Çevre krizi artık, siyasi hareket düzeyinde sosyal krizden ayrı değildir. Bu durum yeni üretim ve tüketim modelinin tasarlanmasına yol açmalıdır. Bu dönüşümü bir yük olarak değil, sürdürülebilir işler, rekabet avantajı ve gelecekteki sosyal huzuru en iyi sağlayacak yeni bir",
+                    "Türkiye'de F klavye, on parmak daktilo kullanımı için özel olarak tasarlanmış bir klavye düzenidir. Harflerin yerleşimi Türkçe'deki sesli harf ve sık kullanılan sessiz harflerin ergonomik dağılımına göre optimize edilmiştir. Bu sayede, F klavye ile yazma hızı ve verimliliği Q klavyeye göre daha yüksek olabilir. Özellikle resmî kurumlarda ve daktilo kurslarında yaygın olarak tercih edilir. Klavyede 'F' harfi sol el işaret parmağının altına denk gelir ve bu nedenle 'F klavye' adını almıştır. Türk dilinin yapısına uygunluğu, yazım kolaylığı ve hızlı erişim imkanları ile bilinir."
+                ].map(text => text.trim());
+            }
 
-    window.onload = function() {
-      document.body.classList.remove('fade-out');
-      const testTextElem = document.getElementById("testText");
-      const rawText = testTextElem.innerText.trim();
-      wordsArray = rawText.split(/\s+/);
-      testTextElem.innerHTML = wordsArray.map((word, i) => `<span class="word" data-index="${i}">${word}</span>`).join(" ");
-    };
+            function applyTheme(theme) {
+                document.body.className = theme;
+                DOMElements.keyboardKeys.forEach(key => {
+                    key.classList.remove('light', 'dark', 'highlight-correct', 'highlight-wrong');
+                    key.classList.add(theme);
+                });
+                DOMElements.themeToggle.textContent = theme === 'dark' ? "☀" : "🌙";
+            }
 
-    userInput.addEventListener("input", () => {
-      if (!timerStarted) {
-        startTimer();
-        timerStarted = true;
-      }
-      updateCurrentWordIndicator();
-    });
+            const storedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(storedTheme);
 
-    function startTimer() {
-      timeLeft = parseInt(timeSelect.value);
-      updateCountdownDisplay();
-      countdown = setInterval(() => {
-        timeLeft--;
-        updateCountdownDisplay();
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-          userInput.disabled = true;
-          calculateStats();
-        }
-      }, 1000);
-    }
+            // Event Listeners
+            DOMElements.themeToggle.addEventListener("click", () => {
+                const newTheme = document.body.classList.contains('light') ? 'dark' : 'light';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
 
-    function updateCountdownDisplay() {
-      const mins = Math.floor(timeLeft / 60);
-      const secs = timeLeft % 60;
-      countdownDisplay.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-    }
+            DOMElements.navToGame.addEventListener("click", () => {
+                document.body.classList.add('fade-out');
+                // Hız testinden sonra bir saniye bekleyip yönlendirme yapın
+                setTimeout(() => window.location.href = "f_klavye_oyunu.html", 500);
+            });
 
-    function updateCurrentWordIndicator() {
-      const userWords = userInput.value.split(/\s+/);
-      let currentIndex = userWords.length - 1;
-      const typedWord = userWords[userWords.length - 1] || "";
-      document.querySelectorAll("#testText .word").forEach(span => {
-         span.style.textDecoration = "";
-         span.style.textUnderlineOffset = "";
-         span.style.color = "";
-      });
-      if (currentIndex < wordsArray.length) {
-         const currentSpan = document.querySelector(`#testText .word[data-index="${currentIndex}"]`);
-         if (currentSpan) {
-           currentSpan.style.textDecoration = "underline";
-           currentSpan.style.textUnderlineOffset = "2px";
-           if (typedWord !== "" && !wordsArray[currentIndex].toLowerCase().startsWith(typedWord.toLowerCase())) {
-             currentSpan.style.color = "red";
-           }
-         }
-      }
-    }
+            DOMElements.userInput.addEventListener("input", () => {
+                if (!timerStarted) {
+                    startTime = new Date().getTime();
+                    startTimer();
+                    timerStarted = true;
+                }
+                highlightCurrentWordAndChars();
+                calculateLiveStats();
+            });
 
-    function calculateStats() {
-      const userText = userInput.value.trim();
-      const originalText = wordsArray.join(" ");
-      const originalWords = originalText.split(/\s+/);
-      const userWords = userText.split(/\s+/);
-      let totalErrors = 0;
-      let resultHTML = '';
-      const punctuations = [".", ",", ";", ":", "!", "?", "—", "-", "…"];
-      for (let i = 0; i < originalWords.length; i++) {
-        const original = originalWords[i] || "";
-        const user = userWords[i] || "";
-        const lastChar = original.slice(-1);
-        const isPunctuation = punctuations.includes(lastChar);
-        const baseWord = isPunctuation ? original.slice(0, -1) : original;
-        if (i === userWords.length - 1 && !user.endsWith(lastChar) && baseWord.startsWith(user)) {
-          resultHTML += `<span class="correct">${user} </span>`;
-          break;
-        }
-        if (original === user) {
-          resultHTML += `<span class="correct">${user} </span>`;
-        } else if (user === baseWord && isPunctuation) {
-          resultHTML += `<span class="correct">${user}</span><span class="punc-error">${lastChar}</span> `;
-          totalErrors++;
-        } else if (user.startsWith(baseWord)) {
-          resultHTML += `<span class="correct">${user} </span>`;
-        } else if (user === "") {
-          continue;
-        } else {
-          resultHTML += `<span class="wrong">${user} </span>`;
-          totalErrors++;
-        }
-      }
-      const wordCount = userWords.filter(w => w.trim() !== "").length;
-      const charCount = userText.length;
-      const selectedTime = parseInt(timeSelect.value);
-      const wpm = Math.round((wordCount / selectedTime) * 60);
-      const cpm = Math.round((charCount / selectedTime) * 60);
-      document.getElementById("wordCount").textContent = wordCount;
-      document.getElementById("wpm").textContent = wpm;
-      document.getElementById("cpm").textContent = cpm;
-      document.getElementById("errorCount").textContent = totalErrors;
-      resultDiv.innerHTML = "<hr><strong>Yazdığınız Metin (Hatalar kırmızı):</strong><br><br>" + resultHTML;
-    }
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+            DOMElements.restartBtn.addEventListener("click", resetTest);
+            DOMElements.timeSelect.addEventListener("change", resetTest);
 
-    restartBtn.addEventListener("click", () => {
-      clearInterval(countdown);
-      timeLeft = 0;
-      timerStarted = false;
-      userInput.disabled = false;
-      userInput.value = "";
-      document.getElementById("countdown").textContent = "--:--";
-      document.getElementById("wordCount").textContent = "0";
-      document.getElementById("wpm").textContent = "0";
-      document.getElementById("cpm").textContent = "0";
-      document.getElementById("errorCount").textContent = "0";
-      resultDiv.innerHTML = "";
-    });
-  </script>
+
+            // Klavye Tuşu Vurgulama Mantığı
+            function getKeyData(e) {
+                let dataKey = e.key.toLowerCase();
+
+                if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') return 'shift' + e.code.replace('Shift', '').toLowerCase();
+                if (e.code === 'ControlLeft' || e.code === 'ControlRight') return 'control' + e.code.replace('Control', '').toLowerCase();
+                if (e.code === 'AltLeft') return 'altleft';
+                if (e.code === 'AltRight') return 'altright';
+                if (e.code === 'MetaLeft' || e.code === 'MetaRight') return 'os'; // Windows/Command tuşu
+                if (e.key === ' ') return ' ';
+                if (e.key === 'Backspace') return 'backspace';
+                if (e.key === 'Enter' || e.code === 'NumpadEnter') return 'enter';
+                if (e.key === 'Tab') return 'tab';
+                if (e.key === 'CapsLock') return 'capslock';
+
+                // Türkçe klavye düzenine göre shift kombinasyonları
+                if (e.shiftKey) {
+                    switch (e.key) {
+                        case '!': return '1'; case "'": return '2'; case '^': return '3'; case '+': return '4';
+                        case '%': return '5'; case '&': return '6'; case '/': return '7'; case '(': return '8';
+                        case ')': return '9'; case '=': return '0'; case '?': return '/'; case '_': return '-';
+                        case '|': return 'pipe'; case '#': return '3'; case '$': return '4'; case '{': return '7';
+                        case '[': return '8'; case ']': return '9'; case '@': return 'pipe'; case ':': return '.';
+                        case ';': return ',';
+                        // Türkçe özel karakterler için de shift tuşunu kontrol et
+                        case 'İ': return 'i'; // Shift + i -> İ
+                        case 'Ğ': return 'ğ'; // Shift + ğ -> Ğ
+                        case 'Ü': return 'ü'; // Shift + ü -> Ü
+                        case 'Ş': return 'ş'; // Shift + ş -> Ş
+                        case 'Ö': return 'ö'; // Shift + ö -> Ö
+                        case 'Ç': return 'ç'; // Shift + ç -> Ç
+                        default: return dataKey;
+                    }
+                }
+                return dataKey;
+            }
+
+            function handleKeyDown(e) {
+                if (e.key === "Tab" || e.key === "Enter") {
+                    e.preventDefault();
+                }
+
+                const dataKey = getKeyData(e);
+                const targetKey = document.querySelector(`.key[data-key="${dataKey}"]`);
+
+                if (targetKey) {
+                    if (dataKey === 'capslock') {
+                        // CapsLock tuşu basılı ise vurguyu aç/kapat
+                        targetKey.classList.toggle('highlight-correct', e.getModifierState("CapsLock"));
+                        targetKey.classList.remove('highlight-wrong'); // Capslock asla yanlış olarak gösterilmez
+                    } else {
+                        // Diğer tuşlar için, basılan tuşun doğru olup olmadığını kontrol et
+                        const userInputLength = DOMElements.userInput.value.length;
+                        const expectedChar = originalText.charAt(userInputLength); // Kullanıcının bir sonraki yazması gereken karakter
+
+                        let isCorrectCharPress = false;
+                        if (e.key.length === 1) { // Normal bir karakter tuşuysa
+                            // Hem basılan tuşu hem de beklenen karakteri küçük harfe çevirerek karşılaştır
+                            isCorrectCharPress = (e.key.toLowerCase() === expectedChar.toLowerCase());
+                        } else if (e.key === ' ' && expectedChar === ' ') { // Boşluk tuşu ve boşluk bekleniyorsa
+                            isCorrectCharPress = true;
+                        } else if (e.key === 'Backspace' || e.key === 'Enter') {
+                            isCorrectCharPress = true; // Bu tuşlar her zaman "doğru" işlem olarak kabul edilir
+                        }
+
+                        if (isCorrectCharPress) {
+                            targetKey.classList.add('highlight-correct');
+                            targetKey.classList.remove('highlight-wrong');
+                        } else {
+                            targetKey.classList.add('highlight-wrong');
+                            targetKey.classList.remove('highlight-correct');
+                        }
+                    }
+                }
+            }
+
+
+            function handleKeyUp(e) {
+                const dataKey = getKeyData(e);
+                const targetKey = document.querySelector(`.key[data-key="${dataKey}"]`);
+                // CapsLock tuşu hariç, tuş bırakıldığında vurguları kaldır
+                if (targetKey && dataKey !== 'capslock') {
+                    targetKey.classList.remove('highlight-correct', 'highlight-wrong');
+                }
+            }
+
+
+            // Metin Yükleme ve HTML'e Dönüştürme
+            function loadTestText() {
+                originalText = testTexts()[0]; // İlk metni kullanıyoruz
+                DOMElements.testTextElem.innerHTML = ''; // Önceki içeriği temizle
+
+                let currentWordSpan = null;
+                for (let i = 0; i < originalText.length; i++) {
+                    const char = originalText[i];
+                    if (char === ' ') {
+                        if (currentWordSpan) { // Mevcut kelime varsa boşluktan önce kelime span'ini kapat
+                            DOMElements.testTextElem.appendChild(currentWordSpan);
+                            currentWordSpan = null; // Yeni kelime için sıfırla
+                        }
+                        // Boşluk karakterini ayrı bir span olarak ekle
+                        const spaceSpan = document.createElement('span');
+                        spaceSpan.classList.add('char'); // Boşluk da bir karakterdir
+                        spaceSpan.textContent = ' ';
+                        spaceSpan.dataset.charIndex = i; // Global indeksini tutabiliriz
+                        DOMElements.testTextElem.appendChild(spaceSpan);
+                    } else {
+                        if (!currentWordSpan) { // Yeni bir kelime başlıyorsa
+                            currentWordSpan = document.createElement('span');
+                            currentWordSpan.classList.add('word');
+                            currentWordSpan.dataset.wordIndex = DOMElements.testTextElem.querySelectorAll('.word').length;
+                        }
+                        const charSpan = document.createElement('span');
+                        charSpan.classList.add('char');
+                        charSpan.textContent = char;
+                        charSpan.dataset.charIndex = i; // Global indeksini tutabiliriz
+                        currentWordSpan.appendChild(charSpan);
+                    }
+                }
+                if (currentWordSpan) { // Son kelimeyi ekle
+                    DOMElements.testTextElem.appendChild(currentWordSpan);
+                }
+                // İlk kelimeyi vurgula
+                const firstWord = DOMElements.testTextElem.querySelector('.word');
+                if (firstWord) {
+                    firstWord.classList.add('current-word');
+                    firstWord.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+                } else {
+                    // Eğer hiç kelime yoksa (metin boşsa veya sadece boşluklardan oluşuyorsa)
+                    // Hata durumunu loglayabiliriz veya kullanıcıya bildirebiliriz.
+                    console.warn("Yüklenecek test metni bulunamadı veya boş.");
+                }
+            }
+
+
+            // Test Zamanlayıcı Mantığı
+            function startTimer() {
+                timeLeft = parseInt(DOMElements.timeSelect.value);
+                updateCountdownDisplay();
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    updateCountdownDisplay();
+                    if (timeLeft <= 0) {
+                        clearInterval(countdownInterval);
+                        DOMElements.userInput.disabled = true;
+                        calculateFinalStats();
+                        timerStarted = false;
+                    }
+                }, 1000);
+            }
+
+            function updateCountdownDisplay() {
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                DOMElements.countdownDisplay.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+            }
+
+            // Metin Vurgulama ve Canlı Hata Takibi
+            function highlightCurrentWordAndChars() {
+                const userText = DOMElements.userInput.value;
+                const allCharSpans = DOMElements.testTextElem.querySelectorAll('.char'); // Tüm karakter spanlerini al
+                const allWordSpans = DOMElements.testTextElem.querySelectorAll('.word');
+
+                liveErrorCount = 0; // Her tetiklendiğinde canlı hata sayısını sıfırla
+                let currentWordIndex = 0; // Hangi kelime üzerinde olduğumuzu takip etmek için
+
+                // Önceki tüm vurgulamaları temizle
+                allCharSpans.forEach(span => {
+                    span.classList.remove('char-correct', 'char-wrong', 'missing-char-placeholder');
+                    span.style.removeProperty('color'); // Temizle
+                });
+                allWordSpans.forEach(wordSpan => {
+                    wordSpan.classList.remove('current-word');
+                    // Önceki input'tan kalmış extra-char'ları temizle
+                    wordSpan.querySelectorAll('.extra-char[data-original="false"]').forEach(extraCharSpan => {
+                        extraCharSpan.remove();
+                    });
+                });
+
+                let typedWordStartIndex = 0; // Kullanıcının yazdığı metindeki mevcut kelimenin başlangıç indeksi
+
+                for (let i = 0; i < originalText.length; i++) {
+                    const originalChar = originalText.charAt(i);
+                    const typedChar = userText.charAt(i);
+                    const charSpan = allCharSpans[i];
+
+                    // Geçerli kelimeyi bulmak için kontrol
+                    if (originalChar === ' ' && userText.length > i && i > 0 && originalText.charAt(i-1) !== ' '){
+                        // Eğer boşluk karakterine geldiysek ve kullanıcı buraya kadar yazdıysa
+                        // bir sonraki kelimeye geçildiği varsayılır.
+                        currentWordIndex++;
+                        typedWordStartIndex = i + 1; // Yeni kelime başlangıcı
+                    } else if (originalText.charAt(i) !== ' ' && i === 0){
+                         // İlk kelime her zaman 0. kelimedir
+                         currentWordIndex = 0;
+                         typedWordStartIndex = 0;
+                    }
+
+
+                    if (charSpan) {
+                        if (typedChar === '') {
+                            // Kullanıcı henüz bu karakteri yazmamış. Renklendirme yok.
+                        } else if (originalChar.toLowerCase() === typedChar.toLowerCase()) {
+                            charSpan.classList.add('char-correct');
+                        } else {
+                            charSpan.classList.add('char-wrong');
+                            liveErrorCount++;
+                        }
+                    }
+                }
+
+                // Kullanıcının orijinal metinden fazla yazdığı karakterleri ele al
+                if (userText.length > originalText.length) {
+                    for (let i = originalText.length; i < userText.length; i++) {
+                        const extraChar = userText.charAt(i);
+                        // Eğer son kelime span'i boşlukla bitmiyorsa veya hiç kelime yoksa
+                        // bu fazla karakterleri göstermek için yeni bir span eklemeliyiz.
+                        // Bunu yapmak için son kelime span'ini bulup ona ekleyebiliriz.
+                        let lastWordSpan = allWordSpans[allWordSpans.length - 1]; // Son kelime span'i
+                        if (!lastWordSpan) { // Eğer hiç kelime yoksa (metin çok kısa veya boş)
+                            lastWordSpan = DOMElements.testTextElem; // Doğrudan testTextElem'e ekle
+                        }
+
+                        // Eğer son karakter boşluk değilse ve yeni bir span eklememiz gerekiyorsa
+                        const existingExtraCharSpan = lastWordSpan.querySelector(`[data-char-index="${i}"][data-original="false"]`);
+
+                        if (!existingExtraCharSpan) {
+                            const extraSpan = document.createElement('span');
+                            extraSpan.classList.add('char', 'extra-char', 'char-wrong');
+                            extraSpan.textContent = extraChar;
+                            extraSpan.dataset.charIndex = i; // Global indeksini tut
+                            extraSpan.dataset.original = 'false'; // Orijinal metinde olmayan bir karakter
+                            if (lastWordSpan.classList.contains('word')) { // Kelime içinde ise kelimeye ekle
+                                lastWordSpan.appendChild(extraSpan);
+                            } else { // Genel metin div'ine ekle (örn: ilk karakter fazla ise)
+                                DOMElements.testTextElem.appendChild(extraSpan);
+                            }
+                        } else {
+                            existingExtraCharSpan.textContent = extraChar;
+                            existingExtraCharSpan.classList.add('char-wrong');
+                        }
+                        liveErrorCount++;
+                    }
+                }
+
+                // İmlecin bulunduğu kelimeyi vurgula
+                let currentWordElement = DOMElements.testTextElem.querySelector(`.word[data-word-index="${currentWordIndex}"]`);
+                // Eğer imleç boşluğun üzerindeyse veya kelime sonuna geldiyse, bir sonraki kelimeyi vurgulayabiliriz
+                if (!currentWordElement && currentWordIndex < allWordSpans.length) {
+                     currentWordElement = allWordSpans[currentWordIndex];
+                }
+                if (currentWordElement) {
+                    currentWordElement.classList.add('current-word');
+                    currentWordElement.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+                } else if (allWordSpans.length > 0 && userText.length === 0) {
+                     // Metin boşsa her zaman ilk kelimeyi vurgula
+                    allWordSpans[0].classList.add('current-word');
+                    allWordSpans[0].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+                }
+
+
+                DOMElements.statsBox.querySelector("#errorCount").textContent = liveErrorCount;
+            }
+
+
+            // Canlı İstatistik Hesaplama
+            function calculateLiveStats() {
+                const currentTime = new Date().getTime();
+                const elapsedSeconds = (currentTime - startTime) / 1000;
+                const typedCharactersIncludingSpaces = DOMElements.userInput.value.length;
+                const typedWords = DOMElements.userInput.value.split(/\s+/).filter(word => word.length > 0).length;
+
+                let wpm = 0;
+                let cpm = 0;
+
+                if (elapsedSeconds > 0) {
+                    wpm = Math.round((typedCharactersIncludingSpaces / 5) / (elapsedSeconds / 60));
+                    cpm = Math.round(typedCharactersIncludingSpaces / (elapsedSeconds / 60));
+                }
+
+                DOMElements.statsBox.querySelector("#wordCount").textContent = typedWords;
+                DOMElements.statsBox.querySelector("#wpm").textContent = wpm;
+                DOMElements.statsBox.querySelector("#cpm").textContent = cpm;
+            }
+
+
+            // Test Bittiğinde Final İstatistikleri Hesaplama - Güncellenmiş Kısım
+            function calculateFinalStats() {
+                clearInterval(countdownInterval);
+                const typedText = DOMElements.userInput.value;
+
+                let charResultHTML = '';
+
+                // Orijinal metin ve kullanıcının yazdığı metin karakter bazında karşılaştırılır
+                const originalLength = originalText.length;
+                const typedLength = typedText.length;
+                const maxLength = Math.max(originalLength, typedLength);
+
+                for (let i = 0; i < maxLength; i++) {
+                    const oChar = originalText.charAt(i); // Orijinal karakter
+                    const tChar = typedText.charAt(i);     // Yazılan karakter
+
+                    if (i < originalLength && i < typedLength) {
+                        if (oChar.toLowerCase() === tChar.toLowerCase()) {
+                            charResultHTML += `<span class="correct-char">${oChar}</span>`;
+                        } else {
+                            charResultHTML += `<span class="wrong-char">${tChar}</span>`;
+                        }
+                    } else if (i < originalLength && i >= typedLength) {
+                        charResultHTML += `<span class="missing-char">${oChar}</span>`;
+                    } else if (i >= originalLength && i < typedLength) {
+                        charResultHTML += `<span class="wrong-char">${tChar}</span>`;
+                    }
+                }
+
+                DOMElements.resultDiv.innerHTML = `<h3>Test Özeti:</h3>` + charResultHTML;
+                DOMElements.resultDiv.scrollIntoView({ behavior: 'smooth' });
+
+                const elapsedSeconds = parseInt(DOMElements.timeSelect.value);
+
+                const grossKeystrokes = typedText.length;
+                const wordsTypedCount = typedText.split(/\s+/).filter(word => word.length > 0).length;
+
+                let finalWPM = 0;
+                let finalCPM = 0;
+                if (elapsedSeconds > 0) {
+                    finalWPM = Math.round((grossKeystrokes / 5) / (elapsedSeconds / 60));
+                    finalCPM = Math.round(grossKeystrokes / (elapsedSeconds / 60));
+                }
+
+                DOMElements.statsBox.querySelector("#wordCount").textContent = wordsTypedCount;
+                DOMElements.statsBox.querySelector("#wpm").textContent = finalWPM;
+                DOMElements.statsBox.querySelector("#cpm").textContent = finalCPM;
+                DOMElements.statsBox.querySelector("#errorCount").textContent = liveErrorCount;
+            }
+
+
+            // Testi Sıfırlama
+            function resetTest() {
+                clearInterval(countdownInterval);
+                DOMElements.userInput.value = "";
+                DOMElements.userInput.disabled = false;
+                DOMElements.userInput.focus();
+                timerStarted = false;
+                timeLeft = parseInt(DOMElements.timeSelect.value);
+                updateCountdownDisplay();
+                loadTestText(); // Metni yeniden yükle ve kelimeleri spanlere ayır
+                DOMElements.statsBox.querySelector("#wordCount").textContent = "0";
+                DOMElements.statsBox.querySelector("#wpm").textContent = "0";
+                DOMElements.statsBox.querySelector("#cpm").textContent = "0";
+                DOMElements.statsBox.querySelector("#errorCount").textContent = "0";
+                liveErrorCount = 0; // Hata sayısını sıfırla
+                DOMElements.resultDiv.innerHTML = "";
+                DOMElements.keyboardKeys.forEach(key => key.classList.remove('highlight-correct', 'highlight-wrong'));
+
+                // Tüm metin spanlerinin sınıflarını temizle
+                const allCharSpans = DOMElements.testTextElem.querySelectorAll('.char');
+                allCharSpans.forEach(span => {
+                    span.classList.remove('char-correct', 'char-wrong', 'missing-char-placeholder');
+                    span.style.removeProperty('color');
+                });
+
+                // Extra-char olan ve orijinal metne ait olmayan span'leri kaldır
+                DOMElements.testTextElem.querySelectorAll('.extra-char[data-original="false"]').forEach(extraCharSpan => {
+                    extraCharSpan.remove();
+                });
+
+                // Tüm kelime span'lerinin vurgularını kaldır
+                const allWordSpans = DOMElements.testTextElem.querySelectorAll('.word');
+                allWordSpans.forEach(wordSpan => {
+                    wordSpan.classList.remove('current-word');
+                });
+
+                // İlk kelimeyi tekrar vurgula (eğer varsa)
+                if (allWordSpans.length > 0) {
+                    allWordSpans[0].classList.add('current-word');
+                    allWordSpans[0].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+                }
+            }
+
+            // Başlangıçta testi yükle
+            resetTest();
+        });
+    </script>
 </body>
 </html>
